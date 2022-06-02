@@ -20,6 +20,7 @@ const AddUser = (props) => {
     }
     if(enteredPassword.trim().length < 8){
       errMsg = "Password must be at least 8 characters.";
+      console.log(errMsg);
       return;
     }
     setEnteredUsername("");
