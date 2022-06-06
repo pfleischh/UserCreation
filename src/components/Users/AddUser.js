@@ -8,7 +8,7 @@ const AddUser = (props) => {
   const [enteredUsername, setEnteredUsername] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
 
-  let errMsg = "";
+ // let errMsg = "";
 
   const addUserHandler = (event) => {
     event.preventDefault();
@@ -18,14 +18,15 @@ const AddUser = (props) => {
     ) {
       return;
     }
-    if(enteredPassword.trim().length < 8){
-      errMsg = "Password must be at least 8 characters.";
-      console.log(errMsg);
-      return;
-    }
+    // if(enteredPassword.trim().length < 8){
+    //   errMsg = "Password must be at least 8 characters.";
+    //   console.log(errMsg);
+    //   return;
+    // }
+    props.onAddUser(enteredUsername, enteredPassword);
     setEnteredUsername("");
     setEnteredPassword("");
-    console.log(enteredUsername, enteredPassword);
+    
   };
 
   const usernameChangeHandler = (event) => {
