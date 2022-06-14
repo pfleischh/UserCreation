@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import Card from "../UI/Card";
 import classes from "./AddUser.module.css";
 import Button from "../UI/Button";
+import ErrorModal from "../UI/ErrorModal";
 
 const AddUser = (props) => {
   const [enteredUsername, setEnteredUsername] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
-
- // let errMsg = "";
+  const [error, setError] = useState();
 
   const addUserHandler = (event) => {
     event.preventDefault();
@@ -16,17 +16,23 @@ const AddUser = (props) => {
       enteredUsername.trim().length === 0 ||
       enteredPassword.trim().length === 0
     ) {
+      setError({
+        title: "Invalid Input",
+        message: "Username and Password cannot be blank",
+      });
       return;
     }
-    // if(enteredPassword.trim().length < 8){
-    //   errMsg = "Password must be at least 8 characters.";
-    //   console.log(errMsg);
-    //   return;
-    // }
+    if (enteredPassword.trim().length < 6) {
+      setError({
+        title: "Invalid Password",
+        message: "Password must be greater than 6 characters",
+      });
+      return;
+    }
+
     props.onAddUser(enteredUsername, enteredPassword);
     setEnteredUsername("");
     setEnteredPassword("");
-    
   };
 
   const usernameChangeHandler = (event) => {
@@ -36,26 +42,40 @@ const AddUser = (props) => {
     setEnteredPassword(event.target.value);
   };
 
+  const errorHandler = () => {
+    setError(null);
+  };
+
   return (
-    <Card className={classes.input}>
-      <form onSubmit={addUserHandler}>
-        <label htmlFor="username">Username</label>
-        <input
-          id="username"
-          type="text"
-          value={enteredUsername}
-          onChange={usernameChangeHandler}
+    <div>
+      {error && (
+        <ErrorModal
+          title={error.title}
+          message={error.message}
+          onConfirm={errorHandler}
         />
-        <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          type="text"
-          value={enteredPassword}
-          onChange={passwordChangeHandler}
-        />
-        <Button type="submit">Add User</Button>
-      </form>
-    </Card>
+      )}
+
+      <Card className={classes.input}>
+        <form onSubmit={addUserHandler}>
+          <label htmlFor="username">Username</label>
+          <input
+            id="username"
+            type="text"
+            value={enteredUsername}
+            onChange={usernameChangeHandler}
+          />
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="text"
+            value={enteredPassword}
+            onChange={passwordChangeHandler}
+          />
+          <Button type="submit">Add User</Button>
+        </form>
+      </Card>
+    </div>
   );
 };
 
