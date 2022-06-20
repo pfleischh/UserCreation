@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment, useRef } from "react";
 
 import Card from "../UI/Card";
 import classes from "./AddUser.module.css";
@@ -6,15 +6,21 @@ import Button from "../UI/Button";
 import ErrorModal from "../UI/ErrorModal";
 
 const AddUser = (props) => {
-  const [enteredUsername, setEnteredUsername] = useState("");
-  const [enteredPassword, setEnteredPassword] = useState("");
+  const nameInputRef = useRef();
+  const passwordInputRef = useRef();
+
+  //const [enteredUsername, setEnteredUsername] = useState("");
+  // [enteredPassword, setEnteredPassword] = useState("");
   const [error, setError] = useState();
 
   const addUserHandler = (event) => {
     event.preventDefault();
+    const enteredName = nameInputRef.current.value;
+    const enteredUserPassword = passwordInputRef.current.value;
+
     if (
-      enteredUsername.trim().length === 0 ||
-      enteredPassword.trim().length === 0
+      enteredName.trim().length === 0 ||
+      enteredUserPassword.trim().length === 0
     ) {
       setError({
         title: "Invalid Input",
@@ -22,24 +28,18 @@ const AddUser = (props) => {
       });
       return;
     }
-    if (enteredPassword.trim().length < 6) {
+    if (enteredUserPassword.trim().length < 6) {
       setError({
         title: "Invalid Password",
-        message: "Password must be greater than 6 characters",
+        message: "Password must be at least 6 characters",
       });
       return;
     }
 
-    props.onAddUser(enteredUsername, enteredPassword);
-    setEnteredUsername("");
-    setEnteredPassword("");
-  };
+    props.onAddUser(enteredName, enteredUserPassword);
 
-  const usernameChangeHandler = (event) => {
-    setEnteredUsername(event.target.value);
-  };
-  const passwordChangeHandler = (event) => {
-    setEnteredPassword(event.target.value);
+    nameInputRef.current.value = '';
+    passwordInputRef.current.value = '';
   };
 
   const errorHandler = () => {
@@ -47,7 +47,7 @@ const AddUser = (props) => {
   };
 
   return (
-    <div>
+    <Fragment>
       {error && (
         <ErrorModal
           title={error.title}
@@ -59,23 +59,13 @@ const AddUser = (props) => {
       <Card className={classes.input}>
         <form onSubmit={addUserHandler}>
           <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            type="text"
-            value={enteredUsername}
-            onChange={usernameChangeHandler}
-          />
+          <input id="username" type="text" ref={nameInputRef} />
           <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="text"
-            value={enteredPassword}
-            onChange={passwordChangeHandler}
-          />
+          <input id="password" type="text" ref={passwordInputRef} />
           <Button type="submit">Add User</Button>
         </form>
       </Card>
-    </div>
+    </Fragment>
   );
 };
 
